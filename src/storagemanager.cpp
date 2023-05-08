@@ -13,7 +13,6 @@
 #include "hardware/watchdog.h"
 #include "Animation.hpp"
 #include "CRC32.h"
-#include <sstream>
 
 #include "addons/analog.h"
 #include "addons/board_led.h"
@@ -71,11 +70,6 @@ void Storage::initPS4Options() {
 	}
 }
 
-BoardOptions Storage::getBoardOptions()
-{
-	return boardOptions;
-}
-
 void Storage::setDefaultBoardOptions()
 {
 	// Set GP2040 version string and 0 mem after
@@ -122,7 +116,7 @@ void Storage::setDefaultBoardOptions()
 		.buttonPadding = 2
 	};
 	boardOptions.buttonLayoutCustomOptions.params = params;
-	
+
 	ButtonLayoutParams paramsRight = {
 		.layoutRight = BUTTON_LAYOUT_RIGHT,
 		.startX = 8,
@@ -146,11 +140,6 @@ void Storage::setBoardOptions(BoardOptions options)
 		EEPROM.commit();
 		memcpy(&boardOptions, &options, sizeof(BoardOptions));
 	}
-}
-
-AddonOptions Storage::getAddonOptions()
-{
-	return addonOptions;
 }
 
 void Storage::setDefaultAddonOptions()
@@ -234,26 +223,25 @@ void Storage::setAddonOptions(AddonOptions options)
 	}
 }
 
-SplashImage Storage::getSplashImage()
-{
-	return splashImage;
-}
-
 void Storage::setDefaultSplashImage()
 {
 	memcpy(&splashImage.data, &splashImageMain, sizeof(splashImageMain));
 	setSplashImage(splashImage);
 }
 
-void Storage::setSplashImage(SplashImage image)
+void Storage::setSplashImage(const SplashImage& image)
 {
 	if (memcmp(&splashImage, &image, sizeof(SplashImage)) != 0)
 	{
-		image.checksum = CHECKSUM_MAGIC; // set checksum to magic number
-		image.checksum = CRC32::calculate(&image);
-		EEPROM.set(SPLASH_IMAGE_STORAGE_INDEX, image);
-		EEPROM.commit();
 		memcpy(&splashImage, &image, sizeof(SplashImage));
+		splashImage.checksum = CHECKSUM_MAGIC; // set checksum to magic number
+		splashImage.checksum = CRC32::calculate(&splashImage);
+
+		EEPROM.set(SPLASH_IMAGE_STORAGE_INDEX, splashImage);
+		EEPROM.commit();
+
+		// Reset, so that the memcmp gives the correct result on the next call to this function
+		splashImage.checksum = CHECKSUM_MAGIC;
 	}
 }
 
@@ -266,11 +254,6 @@ void Storage::initLEDOptions()
 	if (lastCRC != CRC32::calculate(&ledOptions)) {
 		setDefaultLEDOptions();
 	}
-}
-
-LEDOptions Storage::getLEDOptions()
-{
-	return ledOptions;
 }
 
 void Storage::setDefaultLEDOptions()
@@ -348,11 +331,6 @@ void Storage::setPreviewBoardOptions(const BoardOptions& boardOptions)
 	memcpy(&previewBoardOptions, &boardOptions, sizeof(BoardOptions));
 }
 
-BoardOptions Storage::getPreviewBoardOptions()
-{
-	return previewBoardOptions;
-}
-
 void Storage::SetConfigMode(bool mode) { // hack for config mode
 	CONFIG_MODE = mode;
 	initPreviewBoardOptions();
@@ -415,6 +393,43 @@ AnimationOptions AnimationStorage::getAnimationOptions()
 		options.chaseCycleTime     = LEDS_CHASE_CYCLE_TIME;
 		options.rainbowCycleTime   = LEDS_RAINBOW_CYCLE_TIME;
 		options.themeIndex         = LEDS_THEME_INDEX;
+		options.hasCustomTheme = false;
+		options.customThemeUp = 0;
+		options.customThemeDown = 0;
+		options.customThemeLeft = 0;
+		options.customThemeRight = 0;
+		options.customThemeB1 = 0;
+		options.customThemeB2 = 0;
+		options.customThemeB3 = 0;
+		options.customThemeB4 = 0;
+		options.customThemeL1 = 0;
+		options.customThemeR1 = 0;
+		options.customThemeL2 = 0;
+		options.customThemeR2 = 0;
+		options.customThemeS1 = 0;
+		options.customThemeS2 = 0;
+		options.customThemeA1 = 0;
+		options.customThemeA2 = 0;
+		options.customThemeL3 = 0;
+		options.customThemeR3 = 0;
+		options.customThemeUpPressed = 0;
+		options.customThemeDownPressed = 0;
+		options.customThemeLeftPressed = 0;
+		options.customThemeRightPressed = 0;
+		options.customThemeB1Pressed = 0;
+		options.customThemeB2Pressed = 0;
+		options.customThemeB3Pressed = 0;
+		options.customThemeB4Pressed = 0;
+		options.customThemeL1Pressed = 0;
+		options.customThemeR1Pressed = 0;
+		options.customThemeL2Pressed = 0;
+		options.customThemeR2Pressed = 0;
+		options.customThemeS1Pressed = 0;
+		options.customThemeS2Pressed = 0;
+		options.customThemeA1Pressed = 0;
+		options.customThemeA2Pressed = 0;
+		options.customThemeL3Pressed = 0;
+		options.customThemeR3Pressed = 0;
 
 		setAnimationOptions(options);
 	}

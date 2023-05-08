@@ -221,25 +221,22 @@ public:
 		static Storage instance;
 		return instance;
 	}
-	
-	void setBoardOptions(BoardOptions);	// Board Options
-	void setDefaultBoardOptions();
-	BoardOptions getBoardOptions();
-	
-	void setPreviewBoardOptions(const BoardOptions&);	// Preview Board Options
-	BoardOptions getPreviewBoardOptions();
-	
-	void setAddonOptions(AddonOptions); // Add-On Options
-	void setDefaultAddonOptions();
-	AddonOptions getAddonOptions();
 
-	void setSplashImage(SplashImage);
-	void setDefaultSplashImage();
-	SplashImage getSplashImage();
+	void setBoardOptions(BoardOptions);	// Board Options
+	const BoardOptions& getBoardOptions() { return boardOptions; }
+
+	void setPreviewBoardOptions(const BoardOptions&);	// Preview Board Options
+	const BoardOptions& getPreviewBoardOptions() { return previewBoardOptions; }
+
+	void setAddonOptions(AddonOptions); // Add-On Options
+	const AddonOptions& getAddonOptions() { return addonOptions; }
+
+	void setSplashImage(const SplashImage&);
+	const SplashImage& getSplashImage() { return splashImage; }
 
 	void setLEDOptions(LEDOptions);		// LED Options
 	void setDefaultLEDOptions();
-	LEDOptions getLEDOptions();
+	const LEDOptions& getLEDOptions() { return ledOptions; }
 
 	void savePS4Options();     // PS4 Options
 	void setDefaultPS4Options();
@@ -275,6 +272,9 @@ private:
 	void initAddonOptions();
 	void initLEDOptions();
 	void initSplashImage();
+	void setDefaultBoardOptions();
+	void setDefaultAddonOptions();
+	void setDefaultSplashImage();
 	void initPS4Options();
 	bool CONFIG_MODE; 			// Config mode (boot)
 	Gamepad * gamepad;    		// Gamepad data
